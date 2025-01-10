@@ -45,7 +45,7 @@ var validation = ({
 ---
 
 
-if(sizeOf(keysOf(validation filterObject ((value, key, index) -> value as String != "valid"))) > 1) "all validation errors" else "At least it has One  Error"]]></ee:set-payload>
+if(sizeOf(keysOf(validation filterObject ((value, key, index) -> value as String != "valid"))) > 1) "all validation errors From Evangadi Student" else "At least it has One  Error From Evangadi Student"]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
         
