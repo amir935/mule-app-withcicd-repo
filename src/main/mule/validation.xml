@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="441a10c8-2ed3-4710-8156-7996e1586928" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="ValidatePaymentFlow">
+        <http:listener path="/validate" config-ref="HTTP_Listener_config" />
+
+        <!-- Validate Cardholder Name -->
+        <ee:transform doc:name="Transform Message" doc:id="d944112f-d264-45ff-91e8-3a70eaa44d8d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+var validation = ({
+	"validateCardHolderError": if(!(payload.cardholderName != null and sizeOf(payload.cardholderName) >= 5 and sizeOf(payload.cardholderName) <= 50)) 
+    "valid" else "Cardholder name must be between 5 and 50 characters",
+
+
+
+
+
+	"validatecreditCardNumberError": if(!(payload.creditCardNumber != null and sizeOf(payload.creditCardNumber) <= 16)) "Invalid credit card number format. Must be 16 digits." else "valid",
+
+
+    "validateexpirationDate": if(substringEvery(now(),2)[1] <= (payload.expirationDate  splitBy "/")[1])"valid" else "Expiration Date must be a future date.",
+
+
+"validateCvv": if(sizeOf(payload.cvv) > 3) "more than three digit" else "valid",
+
+
+
+
+
+
+
+"validatepaymentAmountError": if(payload.paymentAmount > 0) "valid" else "An unexpected error occurred during payment processing. Please try again later.",
+})
+---
+
+
+if(sizeOf(keysOf(validation filterObject ((value, key, index) -> value as String != "valid"))) > 1) "all validation errors" else "At least it has One  Error"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+        
+        <!-- Validate Credit Card Number -->
+        
+        <!-- Validate Expiration Date -->
+        
+        <!-- Validate CVV -->
+        
+        <!-- Validate Payment Amount -->
+        
+        <!-- Final Validation -->
+    </flow>
+</mule>
