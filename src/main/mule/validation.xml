@@ -58,5 +58,7 @@ if(sizeOf(keysOf(validation filterObject ((value, key, index) -> value as String
         <!-- Validate Payment Amount -->
         
         <!-- Final Validation -->
-    </flow>
+		<logger level="INFO" doc:name="Logger" doc:id="e7ecce6d-2425-4963-a41d-453a04dc8e10" message='#["This Flow has Completed"]'/>
+    
+</flow>
 </mule>
